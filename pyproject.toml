@@ -11,7 +11,7 @@ requires-python = ">=3.10"
 license = "Apache-2.0"
 license-files = ["LICENSE"]
 keywords = ["deephaven", "plugin", "notification", "notifications", "alerts"]
-authors = [{ name = "dsmmcken" }]
+authors = [{ name = "mofojed" }]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
@@ -32,9 +32,9 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/dsmmcken/deephaven-plugin-notification"
-Repository = "https://github.com/dsmmcken/deephaven-plugin-notification"
-Issues = "https://github.com/dsmmcken/deephaven-plugin-notification/issues"
+Homepage = "https://github.com/mofojed/deephaven-plugin-notification"
+Repository = "https://github.com/mofojed/deephaven-plugin-notification"
+Issues = "https://github.com/mofojed/deephaven-plugin-notification/issues"
 
 [project.entry-points."deephaven.plugin"]
 registration_cls = "deephaven_plugin_notification.register:DeephavenPluginNotificationRegistration"
