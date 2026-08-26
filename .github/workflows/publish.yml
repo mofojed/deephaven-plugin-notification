@@ -27,7 +27,8 @@ jobs:
       - name: Verify the bundle loads the way Deephaven loads it
         run: node tests/loader/simulate-dh-loader.mjs
 
-      - uses: astral-sh/setup-uv@v8
+      # setup-uv stopped publishing floating major tags after v7, so pin a full version.
+      - uses: astral-sh/setup-uv@v10.0.1
 
       - name: Build sdist and wheel
         run: uv build
