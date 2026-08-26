@@ -1,0 +1,138 @@
+<!doctype html>
+<!--
+  Tier-1 Harness — deephaven-plugin-notification E2E
+  =================================================
+  Loads the plugin's built CJS bundle the SAME way Deephaven does (via the
+  adapter's `new Function(module, exports, require, text)` evaluation), then
+  delivers events through the plugin's own `eventMapping` handler so tests drive
+  the REAL handler over the real code path.
+
+  The browser's own Notification API is replaced with a controllable mock so the
+  permission branches are deterministic (and so no real OS notification fires).
+
+  window.__harness API (used by Playwright):
+    - send(payload, handlers)   deliver one deephaven_plugin_notification.event
+    - installNotification(opts) mock the Notification API
+    - removeNotification()      make the Notification API undefined
+    - notifications()           constructed notifications, serializable
+    - fire(index, 'onclick')    invoke a notification instance handler
+    - toasts()                  ToastQueue.info calls, serializable
+    - fireToastAction(index)    invoke a toast's onAction
+    - calls()                   how many times onClick/onClose ran
+    - pluginInfo()              { name, eventName, hasHandler, elementKeys }
+    - reset()                   clear all recorded state
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Notification harness</title>
+  </head>
+  <body>
+    <div id="status" style="font-family: monospace">loading…</div>
+
+    <script type="module">
+      let adapter;
+      try {
+        adapter = await import("/adapter/plugin-adapter.js");
+      } catch (e) {
+        document.getElementById("status").textContent =
+          "adapter load error: " + e;
+        console.error("[harness] adapter load error", e);
+        throw e;
+      }
+
+      const state = { instances: [], onClick: 0, onClose: 0 };
+
+      function installNotification({
+        permission = "granted",
+        requestPermissionResult = permission,
+        requestPermissionThrows = false,
+      } = {}) {
+        function MockNotification(title, options) {
+          const instance = { title, options, onclick: null, onclose: null };
+          state.instances.push(instance);
+          return instance;
+        }
+        MockNotification.permission = permission;
+        MockNotification.requestPermission = () =>
+          requestPermissionThrows
+            ? Promise.reject(new Error("denied by test"))
+            : Promise.resolve(requestPermissionResult);
+        window.Notification = MockNotification;
+      }
+
+      window.__harness = {
+        installNotification,
+        removeNotification() {
+          window.Notification = undefined;
+        },
+        send(payload, handlers = {}) {
+          const event = { ...payload };
+          if (handlers.onClick) {
+            event.onClick = () => {
+              state.onClick += 1;
+            };
+          }
+          if (handlers.onClose) {
+            event.onClose = () => {
+              state.onClose += 1;
+            };
+          }
+          adapter.sendEvent(event);
+        },
+        notifications() {
+          return state.instances.map((i) => ({
+            title: i.title,
+            options: i.options,
+            hasOnClick: typeof i.onclick === "function",
+            hasOnClose: typeof i.onclose === "function",
+          }));
+        },
+        fire(index, handler) {
+          const instance = state.instances[index];
+          if (instance && typeof instance[handler] === "function") {
+            instance[handler]();
+            return true;
+          }
+          return false;
+        },
+        toasts() {
+          return adapter.toasts.map((t) => ({
+            message: t.message,
+            actionLabel: t.options?.actionLabel,
+            hasAction: typeof t.options?.onAction === "function",
+          }));
+        },
+        fireToastAction(index) {
+          const toast = adapter.toasts[index];
+          if (toast && typeof toast.options?.onAction === "function") {
+            toast.options.onAction();
+            return true;
+          }
+          return false;
+        },
+        calls() {
+          return { onClick: state.onClick, onClose: state.onClose };
+        },
+        pluginInfo() {
+          return {
+            name: adapter.PLUGIN_NAME,
+            eventName: adapter.EVENT_NAME,
+            hasHandler: typeof adapter.EVENT_HANDLER === "function",
+            elementKeys: Object.keys(adapter.PLUGIN?.mapping ?? {}),
+          };
+        },
+        reset() {
+          state.instances.length = 0;
+          state.onClick = 0;
+          state.onClose = 0;
+          adapter.toasts.length = 0;
+        },
+      };
+
+      window.__harnessReady = true;
+      document.getElementById("status").textContent =
+        "harness ready — plugin: " + adapter.PLUGIN_NAME;
+    </script>
+  </body>
+</html>

@@ -1,0 +1,31 @@
+{
+  "name": "deephaven-plugin-notification",
+  "version": "0.1.0",
+  "description": "Shows OS-level system notifications in deephaven.ui panels (the JS half of deephaven_plugin_notification).",
+  "keywords": [
+    "Deephaven",
+    "plugin"
+  ],
+  "license": "Apache-2.0",
+  "main": "dist/index.js",
+  "scripts": {
+    "start": "vite build --watch",
+    "build": "vite build"
+  },
+  "devDependencies": {
+    "@deephaven/tsconfig": "^0.72.0",
+    "typescript": "^5.9.3",
+    "vite": "~4.1.4"
+  },
+  "dependencies": {
+    "@deephaven/components": "^1.2.0",
+    "@deephaven/log": "^1.1.0",
+    "@deephaven/plugin": "^1.2.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "dist"
+  ]
+}
