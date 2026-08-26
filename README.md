@@ -122,15 +122,15 @@ Calling `notification` directly from a background thread raises `NotificationErr
 
 ### `notification(title, *, description=None, icon=None, tag=None, silent=None, on_click=None, on_close=None)`
 
-| Argument      | Type       | Description                                                                     |
-| ------------- | ---------- | ------------------------------------------------------------------------------- |
-| `title`       | `str`      | The title to display in the notification.                                       |
-| `description` | `str`      | Body text to display below the title.                                           |
-| `icon`        | `str`      | URL of an image to display as the notification's icon.                          |
-| `tag`         | `str`      | Notifications sharing a tag replace each other instead of stacking.             |
-| `silent`      | `bool`     | Display without sound or vibration, regardless of device settings.              |
-| `on_click`    | `Callable` | Called when the user clicks the notification.                                   |
-| `on_close`    | `Callable` | Called when the notification is closed, either by the user or after a timeout.  |
+| Argument      | Type       | Description                                                                    |
+| ------------- | ---------- | ------------------------------------------------------------------------------ |
+| `title`       | `str`      | The title to display in the notification.                                      |
+| `description` | `str`      | Body text to display below the title.                                          |
+| `icon`        | `str`      | URL of an image to display as the notification's icon.                         |
+| `tag`         | `str`      | Notifications sharing a tag replace each other instead of stacking.            |
+| `silent`      | `bool`     | Display without sound or vibration, regardless of device settings.             |
+| `on_click`    | `Callable` | Called when the user clicks the notification.                                  |
+| `on_close`    | `Callable` | Called when the notification is closed, either by the user or after a timeout. |
 
 ## Examples
 

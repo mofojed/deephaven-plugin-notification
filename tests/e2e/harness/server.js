@@ -34,8 +34,7 @@ function serve(res, filePath) {
     return;
   }
   res.writeHead(200, {
-    "Content-Type":
-      MIME[path.extname(filePath)] ?? "application/octet-stream",
+    "Content-Type": MIME[path.extname(filePath)] ?? "application/octet-stream",
     "Cache-Control": "no-store",
   });
   res.end(fs.readFileSync(filePath));

@@ -1,3 +1,3 @@
-import { DeephavenPluginNotificationPlugin } from './DeephavenPluginNotificationPlugin';
+import { DeephavenPluginNotificationPlugin } from "./DeephavenPluginNotificationPlugin";
 
 export default DeephavenPluginNotificationPlugin;

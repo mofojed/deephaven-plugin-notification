@@ -1,11 +1,11 @@
-import { ToastQueue } from '@deephaven/components';
-import Log from '@deephaven/log';
+import { ToastQueue } from "@deephaven/components";
+import Log from "@deephaven/log";
 
-const log = Log.module('Notification');
+const log = Log.module("Notification");
 
 // Must match NOTIFICATION_EVENT in the Python package
 // (see src/deephaven_plugin_notification/notification.py).
-export const NOTIFICATION_EVENT = 'deephaven_plugin_notification.event';
+export const NOTIFICATION_EVENT = "deephaven_plugin_notification.event";
 
 export type NotificationParams = {
   title: string;
@@ -28,7 +28,7 @@ function showToastFallback(params: NotificationParams): void {
   const message = description != null ? `${title}: ${description}` : title;
   ToastQueue.info(
     message,
-    onClick != null ? { actionLabel: 'View', onAction: onClick } : undefined
+    onClick != null ? { actionLabel: "View", onAction: onClick } : undefined,
   );
 }
 
@@ -43,29 +43,29 @@ function showToastFallback(params: NotificationParams): void {
  * @param params The notification event parameters
  */
 export async function showNotification(
-  params: NotificationParams
+  params: NotificationParams,
 ): Promise<void> {
   const { title, description, icon, tag, silent, onClick, onClose } = params;
 
-  if (typeof Notification === 'undefined') {
-    log.warn('Notifications are not supported, falling back to a toast');
+  if (typeof Notification === "undefined") {
+    log.warn("Notifications are not supported, falling back to a toast");
     showToastFallback(params);
     return;
   }
 
   let { permission } = Notification;
-  if (permission === 'default') {
+  if (permission === "default") {
     try {
       permission = await Notification.requestPermission();
     } catch (e) {
-      log.warn('Error requesting notification permission', e);
+      log.warn("Error requesting notification permission", e);
       showToastFallback(params);
       return;
     }
   }
 
-  if (permission !== 'granted') {
-    log.debug('Notification permission not granted, falling back to a toast');
+  if (permission !== "granted") {
+    log.debug("Notification permission not granted, falling back to a toast");
     showToastFallback(params);
     return;
   }

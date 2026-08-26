@@ -27,27 +27,26 @@ test("displays a notification when permission is granted", async ({ page }) => {
     });
   });
 
-  await expect.poll(() => notifications(page)).toEqual([
-    expect.objectContaining({
-      title: "Title",
-      options: { body: "Body", icon: "icon.png", tag: "tag", silent: true },
-    }),
-  ]);
+  await expect
+    .poll(() => notifications(page))
+    .toEqual([
+      expect.objectContaining({
+        title: "Title",
+        options: { body: "Body", icon: "icon.png", tag: "tag", silent: true },
+      }),
+    ]);
   expect(await toasts(page)).toEqual([]);
 });
 
 test("wires onClick and onClose to the notification", async ({ page }) => {
   await page.evaluate(() => {
     window.__harness.installNotification({ permission: "granted" });
-    window.__harness.send(
-      { title: "Title" },
-      { onClick: true, onClose: true },
-    );
+    window.__harness.send({ title: "Title" }, { onClick: true, onClose: true });
   });
 
-  await expect.poll(() => notifications(page)).toEqual([
-    expect.objectContaining({ hasOnClick: true, hasOnClose: true }),
-  ]);
+  await expect
+    .poll(() => notifications(page))
+    .toEqual([expect.objectContaining({ hasOnClick: true, hasOnClose: true })]);
 
   await page.evaluate(() => {
     window.__harness.fire(0, "onclick");
@@ -79,7 +78,9 @@ test("falls back to a toast when permission is denied", async ({ page }) => {
 
   await expect
     .poll(() => toasts(page))
-    .toEqual([{ message: "Title: Body", actionLabel: undefined, hasAction: false }]);
+    .toEqual([
+      { message: "Title: Body", actionLabel: undefined, hasAction: false },
+    ]);
   expect(await notifications(page)).toEqual([]);
 });
 
@@ -110,7 +111,9 @@ test("falls back to a toast when the permission request is rejected", async ({
 
   await expect
     .poll(() => toasts(page))
-    .toEqual([{ message: "Title: Body", actionLabel: undefined, hasAction: false }]);
+    .toEqual([
+      { message: "Title: Body", actionLabel: undefined, hasAction: false },
+    ]);
   expect(await notifications(page)).toEqual([]);
 });
 
@@ -124,5 +127,7 @@ test("falls back to a toast when notifications are not supported", async ({
 
   await expect
     .poll(() => toasts(page))
-    .toEqual([{ message: "Title: Body", actionLabel: undefined, hasAction: false }]);
+    .toEqual([
+      { message: "Title: Body", actionLabel: undefined, hasAction: false },
+    ]);
 });

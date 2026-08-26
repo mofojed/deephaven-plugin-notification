@@ -76,7 +76,8 @@ const pluginDescriptor =
 export const PLUGIN = pluginDescriptor;
 export const PLUGIN_NAME = pluginDescriptor?.name;
 export const EVENT_NAME = NOTIFICATION_EVENT;
-export const EVENT_HANDLER = pluginDescriptor?.eventMapping?.[NOTIFICATION_EVENT];
+export const EVENT_HANDLER =
+  pluginDescriptor?.eventMapping?.[NOTIFICATION_EVENT];
 
 if (typeof EVENT_HANDLER !== "function") {
   console.error(
